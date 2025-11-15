@@ -1,0 +1,20 @@
+{
+  "name": "quanly-sales-app",
+  "version": "0.1.0",
+  "description": "Simple sales management app with Excel import/export",
+  "main": "server/index.js",
+  "scripts": {
+    "start": "node server/index.js",
+    "dev": "node server/index.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.18.2",
+    "multer": "^1.4.5-lts.1",
+    "xlsx": "^0.18.5",
+    "mysql2": "^3.3.0",
+    "exceljs": "^4.3.0"
+  }
+}
