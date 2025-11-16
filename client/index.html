@@ -9,12 +9,12 @@
       /* footer totals style */
       #tbl tfoot tr th, #tbl tfoot tr td {
         font-weight: 700;
-        font-size: 1.05rem;
+        font-size: 0.9rem;
         color: red;
+        text-align: right;
       }
       /* Mobile tweaks */
       @media (max-width: 575.98px) {
-        /* body { padding: 12px; } */
         /* make toolbar controls stack and fill width */
         #toolbar .form-control, #toolbar .btn, #toolbar .form-select { width: 100% !important; }
         /* slightly smaller table text on small screens */
@@ -34,6 +34,55 @@
         /* compact action buttons */
         .action-btns { white-space: nowrap; }
         .action-btns .btn { display: inline-flex;  font-size: 0.72rem; line-height: 1; }
+      }
+
+      /* Edge-to-edge mobile layout for slightly larger mobile widths as well */
+      @media (max-width: 768px) {
+        /* reduce outer paddings so content reaches closer to device edges */
+        body.p-4 { padding-left: 6px !important; padding-right: 6px !important; }
+        .container { max-width: 100%; padding-left: 4px; padding-right: 4px; }
+        /* toolbar and actions full width and minimal gaps */
+        #toolbar { gap: 6px; }
+        #toolbar .form-control, #toolbar .btn, #toolbar .form-select { width: 100% !important; }
+        #mainActions { width: 100%; display: flex; flex-direction: column; gap: 6px; }
+        /* make file input and large buttons full width and tighter */
+        #mainActions input[type=file] { width: 100%; }
+        #mainActions .btn { width: 100%; }
+        /* table occupies full width with reduced cell padding */
+        .table-responsive { margin: 0; }
+        #tbl { width: 100%; margin-bottom: 0; }
+        #tbl th, #tbl td { padding: 0.35rem 0.35rem; }
+        /* tighten action buttons */
+        .action-btns .btn { padding: 0.2rem 0.35rem; font-size: 0.72rem; }
+        /* reduce footer spacing */
+        #tbl tfoot tr th, #tbl tfoot tr td { padding: 0.35rem 0.35rem; }
+        /* allow headers to wrap to save width */
+        #tbl th { white-space: normal; }
+      }
+
+      /* Prevent numeric columns from wrapping so numbers stay on one line */
+      /* Numeric/data columns: 3=Số bao,4=KL,5=Tổng khối,6=Số con,7=Đơn giá,8=Thành tiền,9=Tổng tiền */
+      #tbl th:nth-child(3), #tbl td:nth-child(3),
+      #tbl th:nth-child(4), #tbl td:nth-child(4),
+      #tbl th:nth-child(5), #tbl td:nth-child(5),
+      #tbl th:nth-child(6), #tbl td:nth-child(6),
+      #tbl th:nth-child(7), #tbl td:nth-child(7),
+      #tbl th:nth-child(8), #tbl td:nth-child(8),
+      #tbl th:nth-child(9), #tbl td:nth-child(9) {
+        white-space: nowrap !important;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      /* Right-align numeric columns for readability */
+      #tbl th:nth-child(3), #tbl td:nth-child(3),
+      #tbl th:nth-child(4), #tbl td:nth-child(4),
+      #tbl th:nth-child(5), #tbl td:nth-child(5),
+      #tbl th:nth-child(6), #tbl td:nth-child(6),
+      #tbl th:nth-child(7), #tbl td:nth-child(7),
+      #tbl th:nth-child(8), #tbl td:nth-child(8),
+      #tbl th:nth-child(9), #tbl td:nth-child(9) {
+        text-align: right;
       }
 
         /* target numeric columns to be more compact on small screens

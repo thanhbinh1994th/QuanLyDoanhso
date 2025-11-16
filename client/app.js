@@ -125,7 +125,69 @@ async function loadTable() {
   sumPieces.textContent = totalPieces;
   sumAmount.textContent = formatNumber(totalAmount);
   sumTotalAmount.textContent = formatNumber(totalTotalAmount);
+
+  // adjust column widths to match footer 'Tổng' row
+  requestAnimationFrame(() => adjustColumnWidths());
 }
+
+// Adjust table column widths so they match the computed widths of the footer totals row
+function adjustColumnWidths() {
+  const table = document.getElementById('tbl');
+  if (!table) return;
+  const thead = table.querySelector('thead');
+  const tfootRow = table.querySelector('tfoot tr');
+  if (!thead || !tfootRow) return;
+
+  const headerThs = Array.from(thead.querySelectorAll('th'));
+  const headerCount = headerThs.length;
+
+  // read footer cells and distribute widths respecting colspan
+  const footCells = Array.from(tfootRow.children);
+  const colWidths = new Array(headerCount).fill(0);
+  let idx = 0;
+  for (const cell of footCells) {
+    const colspan = Number(cell.getAttribute('colspan')) || 1;
+    const rect = cell.getBoundingClientRect();
+    const w = rect.width || cell.offsetWidth || 0;
+    const per = Math.floor(w / colspan);
+    for (let i = 0; i < colspan && idx < headerCount; i++) {
+      colWidths[idx] = per;
+      idx++;
+    }
+  }
+  // If some widths are zero (no footer cell matched), fallback to equal distribution
+  const totalAssigned = colWidths.reduce((a,b)=>a+b,0);
+  if (totalAssigned === 0) {
+    const approx = Math.max(60, Math.floor(table.offsetWidth / headerCount));
+    for (let i=0;i<headerCount;i++) colWidths[i] = approx;
+  }
+
+  // create or update colgroup
+  let colgroup = table.querySelector('colgroup');
+  if (!colgroup) {
+    colgroup = document.createElement('colgroup');
+    table.insertBefore(colgroup, table.firstChild);
+  }
+  colgroup.innerHTML = '';
+  for (let i = 0; i < headerCount; i++) {
+    const col = document.createElement('col');
+    const w = colWidths[i] || Math.max(60, Math.floor(table.offsetWidth / headerCount));
+    // use min-width instead of fixed width so columns remain flexible
+    col.style.minWidth = `${w}px`;
+    col.style.width = 'auto';
+    colgroup.appendChild(col);
+  }
+  // prefer auto layout so columns expand to fit content and avoid wrapping
+  table.style.tableLayout = 'auto';
+  table.style.width = '100%';
+}
+
+// debounce resize handler
+let resizeTimer = null;
+window.addEventListener('resize', () => {
+  if (resizeTimer) clearTimeout(resizeTimer);
+  resizeTimer = setTimeout(() => adjustColumnWidths(), 150);
+});
 
 // format date YYYY-MM-DD -> dd/mm/yyyy for display
 function formatDateForDisplay(d) {
